@@ -1,0 +1,59 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@inject IEpisodeClient Client
+
+<PageTitle>Blazor Puzzle Episodes</PageTitle>
+
+<HeadContent>
+	<style>
+		/* Fix height and enable scrolling */
+		.grid {
+			height: 16.5rem;
+			overflow-y: auto;
+			border: 1px solid #ccc;
+		}
+
+			.grid ::deep table {
+				min-width: 100%;
+			}
+	</style>
+</HeadContent>
+
+<h1>Blazor Puzzle Episodes</h1>
+
+<p>In this puzzle, we have a Blazor QuickGrid that is configured to display a list of previous Blazor Puzzle episodes using a WebAssembly interactive home page and a minimal API that delivers the list of episodes.</p>
+
+<p>The list appears in a small block on the screen and we would like to have it virtualized, loading more content as it becomes available.  For some reason, setting the `Virtualize` attribute to true on the QuickGrid changes the behavior of the Grid and no data is displayed.  If the `Virtualize` value is set to false, data is presented.</p>
+
+<p>Can you help us fix the grid in this demo?</p>
+
+<div class="grid">
+	<QuickGrid ItemsProvider="@EpisodeProvider" Virtualize="false">
+		<PropertyColumn Title="Episode Num." Property="@(e => e.Number)" />
+		<PropertyColumn Title="Title" Property="@(e => e.Title)" />
+		<PropertyColumn Title="Published Date" Property="@(e => e.PublishDate)" />
+	</QuickGrid>
+</div>
+
+@code {
+
+	GridItemsProvider<Episode>? EpisodeProvider;
+
+	protected override async Task OnInitializedAsync()
+	{
+
+		EpisodeProvider = new GridItemsProvider<Episode>(async (req) =>
+		{
+			var episodes = await Client.GetEpisodes();
+
+			return new GridItemsProviderResult<Episode>()
+			{
+				Items = episodes?.Skip(req.StartIndex).Take(req.Count ?? int.MaxValue).ToArray() ?? Array.Empty<Episode>()
+			};
+
+		});
+
+		await base.OnInitializedAsync();
+	}
+
+}
