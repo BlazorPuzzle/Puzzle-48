@@ -1,4 +1,12 @@
-# Puzzle 48 - Virtually Nothing
+# Blazor Puzzle #48
+
+## Virtually Nothing
+
+YouTube Video: https://youtu.be/9SM-48PVEQM
+
+Blazor Puzzle Home Page: https://blazorpuzzle.com
+
+### The Challenge:
 
 In this puzzle, we have a Blazor QuickGrid that is configured to display a list of previous Blazor Puzzle episodes using a WebAssembly interactive home page and a minimal API that delivers the list of episodes.
 
